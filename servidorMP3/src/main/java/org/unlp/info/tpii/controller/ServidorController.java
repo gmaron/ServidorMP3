@@ -18,31 +18,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @RestController
 public class ServidorController {
 	
-	@RequestMapping(value = "/musicaOn")
-	public String musicOn (@RequestParam(value="num", defaultValue="0") String numPlaylist){
+	Reproductor mi_reproductor = new Reproductor();
+	
+	@RequestMapping(value = "/musicOn")
+	public void musicOn (@RequestParam(value="num", defaultValue="0") String numPlaylist){
 		Playlist playlist1 = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
-		Reproductor mi_reproductor = new Reproductor();
+		
 		try {
-			  String cancion_reproducir = playlist1.getLista_canciones().get(3).getRuta();
+			  String cancion_reproducir = playlist1.getLista_canciones().get(0).getRuta();
 			  mi_reproductor.AbrirFichero(cancion_reproducir);
 			  //mi_reproductor.AbrirFichero("D:/Cosas 2015/Downloads/celular/El Amante.mp3");
 			  mi_reproductor.Play();
 			} catch (Exception ex) {
 			  System.out.println("Error: " + ex.getMessage());
 			}
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-    	//Set pretty printing of json
-    	objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-    	String arrayToJson = "doesn't work";
-		try {
-			arrayToJson = objectMapper.writeValueAsString(playlist1.getLista_canciones());
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return arrayToJson;
-		//return playlist1.getLista_canciones();
 	}
 	
 	@RequestMapping("/damePlaylist")
@@ -54,5 +43,46 @@ public class ServidorController {
 		}
 		return infoPlaylist;
 	}
+	
+	@RequestMapping("/dameNombrePlaylist")
+	public String dameNombrePlaylist(@RequestParam(value="num", defaultValue="0") String numPlaylist){
+		Playlist playlist = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
+		return playlist.getNombre();
+	}
+	
+	@RequestMapping("/musicOff")
+	public void musicOff(){
+		try {
+			mi_reproductor.Stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping("/dameNombreCancion")
+	public String dameNombreCancion (){
+		return null;
+	}
+	
+	@RequestMapping("/pauseMusic")
+	public void pauseMusic (){
+		try {
+			mi_reproductor.Pausa();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping("/resumeMusic")
+	public void resumeMusic (){
+		try {
+			mi_reproductor.Continuar();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 }
