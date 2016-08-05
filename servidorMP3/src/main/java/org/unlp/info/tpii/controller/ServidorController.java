@@ -1,6 +1,5 @@
 package org.unlp.info.tpii.controller;
 
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,30 +7,29 @@ import org.unlp.info.tpii.utils.Cancion;
 import org.unlp.info.tpii.utils.Playlist;
 import org.unlp.info.tpii.utils.Reproductor;
 
-
 @RestController
 public class ServidorController {
 	
-	private Reproductor mi_reproductor = new Reproductor();
+	private Reproductor mi_reproductor = new Reproductor(this);
 	private int indiceTrack;
 	private Playlist playlistActual = null;
 	
 	@RequestMapping(value = "/musicOn")
 	public void musicOn (@RequestParam(value="num", defaultValue="0") String numPlaylist){
-		playlistActual = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
+		playlistActual = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
 		indiceTrack = 0;
-		try {
-			  String cancion_reproducir = playlistActual.getLista_canciones().get(indiceTrack).getRuta();
+		try {			  
+			  String cancion_reproducir = playlistActual.getLista_canciones().get(indiceTrack).getRuta();			  
 			  mi_reproductor.AbrirFichero(cancion_reproducir);
 			  mi_reproductor.Play();
-			} catch (Exception ex) {
+		} catch (Exception ex) {
 			  System.out.println("Error: " + ex.getMessage());
-			}
+		}
 	}
 	
 	@RequestMapping("/damePlaylist")
 	public String damePlaylist(@RequestParam(value="num", defaultValue="0") String numPlaylist){
-		Playlist playlist = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
+		Playlist playlist = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
 		String infoPlaylist = "";
 		for (Cancion cancion : playlist.getLista_canciones()){
 			infoPlaylist += cancion.getNombre() + " - " +cancion.getArtista()+"\n";
@@ -42,20 +40,20 @@ public class ServidorController {
 	@RequestMapping("/changePlayList")
 	public void changePlayList(@RequestParam(value="num", defaultValue="0") String numPlaylist){
 		this.playlistActual = null;
-		this.playlistActual = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
+		this.playlistActual = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
 		indiceTrack = 0;
 		try {
-			  String cancion_reproducir = playlistActual.getLista_canciones().get(indiceTrack).getRuta();
-			  mi_reproductor.AbrirFichero(cancion_reproducir);
-			  mi_reproductor.Play();
-			} catch (Exception ex) {
-			  System.out.println("Error: " + ex.getMessage());
-			}
+			String cancion_reproducir = playlistActual.getLista_canciones().get(indiceTrack).getRuta();
+			mi_reproductor.AbrirFichero(cancion_reproducir);
+			mi_reproductor.Play();
+		} catch (Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+		}
 	}
 	
 	@RequestMapping("/dameNombrePlaylist")
 	public String dameNombrePlaylist(@RequestParam(value="num", defaultValue="0") String numPlaylist){
-		Playlist playlist = new Playlist(Integer.parseInt(numPlaylist), Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
+		Playlist playlist = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
 		return playlist.getNombre();
 	}
 	
@@ -144,6 +142,5 @@ public class ServidorController {
 			e.printStackTrace();
 		}
 	}
-	
-	
+		
 }
