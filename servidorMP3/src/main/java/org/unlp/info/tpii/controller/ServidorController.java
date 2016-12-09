@@ -1,5 +1,7 @@
 package org.unlp.info.tpii.controller;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,16 +30,22 @@ public class ServidorController {
 	}
 	
 	@RequestMapping("/damePlaylist")
-	public String damePlaylist(@RequestParam(value="num", defaultValue="0") String numPlaylist){
+	public byte[] damePlaylist(@RequestParam(value="num", defaultValue="0") String numPlaylist){
 		Playlist playlist = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));
 		String infoPlaylist = "";
 		for (Cancion cancion : playlist.getLista_canciones()){
 			infoPlaylist += cancion.getNombre() + " - " +cancion.getArtista()+"\n";
 		}
-		return infoPlaylist;
+		byte[] b = null;
+		try {
+			 b = infoPlaylist.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return b;
 	}
 	
-	@RequestMapping("/changePlayList")
+	@RequestMapping("/changePlaylist")
 	public void changePlayList(@RequestParam(value="num", defaultValue="0") String numPlaylist){
 		this.playlistActual = null;
 		this.playlistActual = new Playlist(Reproductor.playlists.get(Integer.parseInt(numPlaylist)));

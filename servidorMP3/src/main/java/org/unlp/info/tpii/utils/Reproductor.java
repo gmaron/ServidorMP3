@@ -20,9 +20,9 @@ public class Reproductor implements BasicPlayerListener{
 	public static Map<Integer, String> playlists;
 	static {
         Map<Integer, String> aMap = new HashMap<Integer, String>();
-        aMap.put(0, "one");
-        aMap.put(1, "Cumbia");
-        aMap.put(2, "two");
+        aMap.put(0, "Latino");
+        aMap.put(1, "Rock Nacional");
+        aMap.put(2, "Rock Internacional");
         playlists = Collections.unmodifiableMap(aMap);
     }
 	
